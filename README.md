@@ -1,31 +1,50 @@
 # anoymous-survey
-project of graduate design
+project of graduation design
 
-## REMIX DEFAULT WORKSPACE
+## 核心功能
 
-### Remix default workspace is present when:
-i. Remix loads for the very first time 
-ii. A new workspace is created with 'Default' template
-iii. There are no files existing in the File Explorer
+使用以太坊技术栈实现核心功能，包括创建问卷、提交问卷答案等。
+考虑实现以太坊实现匿名身份管理, 以保证用户隐私安全。
+同时，还需确保问卷答案不可篡改, 以保证数据完整性。为此，有下面 4 点：
 
-### This workspace contains 3 directories:
+### 如何识别答卷人
 
-1. 'contracts': Holds three contracts with increasing levels of complexity.
-2. 'scripts': Contains four typescript files to deploy a contract. It is explained below.
-3. 'tests': Contains one Solidity test file for 'Ballot' contract & one JS test file for 'Storage' contract.
+需要一种唯一识别答卷人的方法, 考虑使用去中心化的身份管理, 计划使用去中心化标识符(decentralized identifier, DIDs)(~~其实就是 `msg.sender` ~~),
+这种方式识别答卷人既安全又能保证答卷人的匿名性。
 
-### SCRIPTS
+### 如何存储答卷
 
-The 'scripts' folder has four typescript files which help to deploy the 'Storage' contract using 'web3.js' and 'ethers.js' libraries.
+主要考虑安全性, 可以使用IPFS来存储答卷, IPFS已经提供了一种去中心化和分布式的存储解决方案。
 
-For the deployment of any other contract, just update the contract's name from 'Storage' to the desired contract and provide constructor arguments accordingly 
-in the file `deploy_with_ethers.ts` or  `deploy_with_web3.ts`
+### 如何验证答卷(完整性)
 
-In the 'tests' folder there is a script containing Mocha-Chai unit tests for 'Storage' contract.
+考虑验证问卷未被其他人修改, 很自然的想到可以使用数字签名和散列函数。
+一是答卷人使用私钥对问卷进行签名，答卷人则使用公钥对签名进行验证。
+二是计算问卷的哈希值, 并将其与存储的哈希值进行比较，以确保问卷未被修改｡
 
-To run a script, right click on file name in the file explorer and click 'Run'. Remember, Solidity file must already be compiled.
-Output from script will appear in remix terminal.
+### 如何避免其他用户访问问卷
 
-Please note, require/import is supported in a limited manner for Remix supported modules.
-For now, modules supported by Remix are ethers, web3, swarmgw, chai, multihashes, remix and hardhat only for hardhat.ethers object/plugin.
-For unsupported modules, an error like this will be thrown: '<module_name> module require is not supported by Remix IDE' will be shown.
+考虑引入访问控制, 确保只有发卷人和答卷人能够访问问卷。
+
+
+## 数据存储
+
+考虑如何存储问卷数据｡ 需要考虑数据的安全性, 以防止问卷答案泄露给第三方, 考虑存储答卷人公钥签名的问卷而非明文｡ 
+同时，还需要研究如何通过 IPFS 加速前端加载问卷,以提高用户体验，这个提升较难实现｡
+
+对于为什么不直接使用区块链存储数据, 则有以下多种原因：
+
+1.	可扩展性：IPFS被设计为随着用户数量的增长而水平扩展,区块链则会随着其大小的增加,可能会变得缓慢和阻塞。IPFS节点可以缓存频繁访问的数据，降低网络负载,提高性能｡
+
+2.	数据检索时间更短：IPFS使用分布式哈希表(DHT)索引存储在网络中的文件｡允许快速有效的数据检索，区块链由于需要遍历整个链,数据检索时间可能很慢｡
+
+3.	支持大文件:IPFS可以高效地存储和检索大文件,因而更适合于视频流等需要快速存储和访问大量数据的用例｡
+
+4.	节约成本:IPFS节点只需要存储被访问的文件,而不是像在区块链中那样存储整个数据集的完整副本, 可以有效降低了用户的存储成本｡
+
+## 前端
+
+使用 Next.js 开发前端界面, 包括问卷列表, 问卷详情, 提交问卷等页面｡
+考虑如何在前端处理匿名化, 以保证用户隐私安全｡
+同时, 还需考虑如何与 IPFS 通信,以实现问卷数据的存储与加载｡
+
