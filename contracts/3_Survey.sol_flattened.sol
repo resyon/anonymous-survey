@@ -1,4 +1,5 @@
 
+// SPDX-License-Identifier: MIT
 // File: contracts/2_Snowflake.sol
 
 
@@ -53,7 +54,8 @@ contract Snowflake {
 // File: contracts/3_Survey.sol
 
 
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.0;
+
 
 contract Survey {
 
